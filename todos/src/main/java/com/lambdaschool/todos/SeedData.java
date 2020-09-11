@@ -1,11 +1,15 @@
 package com.lambdaschool.todos;
 
+import com.github.javafaker.*;
+import com.lambdaschool.todos.models.Todo;
 import com.lambdaschool.todos.models.User;
 import com.lambdaschool.todos.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 /**
  * SeedData puts both known and random data into the database. It implements CommandLineRunner.
@@ -40,10 +44,10 @@ public class SeedData implements CommandLineRunner
                            "password",
                            "admin@lambdaschool.local");
         u1.getTodos()
-                .add(new Todos(u1,
+                .add(new Todo(u1,
                                "Give Joe access rights"));
         u1.getTodos()
-                .add(new Todos(u1,
+                .add(new Todo(u1,
                                "Change the color of the home page"));
 
         userService.save(u1);
@@ -52,13 +56,13 @@ public class SeedData implements CommandLineRunner
                            "1234567",
                            "cinnamon@lambdaschool.local");
         u2.getTodos()
-                .add(new Todos(u2,
+                .add(new Todo(u2,
                                "Take a nap"));
         u2.getTodos()
-                .add(new Todos(u2,
+                .add(new Todo(u2,
                                "Rearrange my hutch"));
         u2.getTodos()
-                .add(new Todos(u2,
+                .add(new Todo(u2,
                                "Groom my fur"));
         userService.save(u2);
 
@@ -67,7 +71,7 @@ public class SeedData implements CommandLineRunner
                            "ILuvM4th!",
                            "barnbarn@lambdaschool.local");
         u3.getTodos()
-                .add(new Todos(u3,
+                .add(new Todo(u3,
                                "Rearrange my hutch"));
         userService.save(u3);
 
@@ -80,5 +84,23 @@ public class SeedData implements CommandLineRunner
                            "password",
                            "misskitty@school.lambda");
         userService.save(u5);
+
+        if(true) {
+            Faker faker = new Faker();
+            for(int i = 0 ; i < 100 ; i++) {
+                String username = faker.harryPotter().character();
+                String psw = faker.internet().password();
+                username = String.format("%s%s", username, new Date().getTime()).replaceAll("\\s", "");
+                username = username.replaceAll("[\\.|\\,|\\-|-|_|\\(|\\)]", "").toLowerCase();
+                String email = String.format("%s@%s", username, "gmail.com");
+                User newUser = new User(username, psw, email);
+                for(int x = 0 ; x < new Random().nextInt(3) + 1 ; x ++) {
+                    Todo newTodo = new Todo(newUser, faker.harryPotter().quote());
+                    newUser.getTodos().add(newTodo);
+                }
+                System.out.println(email);
+                userService.save(newUser);
+            }
+        }
     }
 }
