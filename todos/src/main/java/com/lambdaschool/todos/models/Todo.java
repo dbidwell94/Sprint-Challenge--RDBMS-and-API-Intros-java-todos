@@ -14,7 +14,7 @@ public class Todo extends Auditable {
     @Column(nullable = false)
     private String description;
 
-    private boolean completed = false;
+    private boolean completed;
 
     @ManyToOne
     @JoinColumn(name = "userid", nullable = false)
@@ -27,6 +27,7 @@ public class Todo extends Auditable {
     public Todo(User user, String description) {
         this.description = description;
         this.user = user;
+        this.completed = false;
     }
 
     public long getTodoid() {
